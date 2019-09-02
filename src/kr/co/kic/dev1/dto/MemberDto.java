@@ -1,8 +1,41 @@
 package kr.co.kic.dev1.dto;
 
 public class MemberDto {
+	private int seq;
 	private String id;
 	private String email;
+	private String name;
+	private String pwd;
+	private String phone;
+	private String regdate;
+	public MemberDto() {
+		super();
+	}
+	public MemberDto(int seq, String id, String email, String name, String phone) {
+		this(seq,id,email,name,null,phone,null);
+	}
+	public MemberDto(String id, String email, String name, String pwd, String phone) {
+		this(0,id,email,name,pwd,phone,null);
+	}
+	public MemberDto(int seq, String id, String email, String name, String phone, String regdate) {
+		this(seq,id,email,name,null,phone,regdate);
+	}
+	public MemberDto(int seq, String id, String email, String name, String pwd, String phone, String regdate) {
+		super();
+		this.seq = seq;
+		this.id = id;
+		this.email = email;
+		this.name = name;
+		this.pwd = pwd;
+		this.phone = phone;
+		this.regdate = regdate;
+	}
+	public int getSeq() {
+		return seq;
+	}
+	public void setSeq(int seq) {
+		this.seq = seq;
+	}
 	public String getId() {
 		return id;
 	}
@@ -12,14 +45,14 @@ public class MemberDto {
 	public String getEmail() {
 		return email;
 	}
-	public MemberDto(String id, String email, String pwd) {
-		super();
-		this.id = id;
-		this.email = email;
-		this.pwd = pwd;
-	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	public String getPwd() {
 		return pwd;
@@ -27,6 +60,18 @@ public class MemberDto {
 	public void setPwd(String pwd) {
 		this.pwd = pwd;
 	}
-	private String pwd;
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public String getRegdate() {
+		return regdate;
+	}
+	public void setRegdate(String regdate) {
+		this.regdate = regdate;
+	}
+	
 	
 }
