@@ -6,6 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import kr.co.kic.dev1.dto.MemberDto;
 import kr.co.kic.dev1.util.ConnLocator;
 
@@ -248,5 +251,60 @@ public class MemberDao {
 		}
 		
 		return count;
+	}
+	
+	public String selectJson(int start,int length){
+		JSONObject jsonObj = new JSONObject();
+		JSONArray jsonArray = new JSONArray();
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int index = 1;
+		try {
+			con = ConnLocator.getConnection();
+			StringBuffer sql = new StringBuffer();
+			sql.append("SELECT m_seq, m_id, m_email,m_name,m_phone,date_format(m_regdate, '%Y/%m/%d') ");
+			sql.append("FROM member ");
+			sql.append("ORDER BY m_seq DESC ");
+			sql.append("LIMIT ?,? ");
+			pstmt = con.prepareStatement(sql.toString());
+			//바인딩변수 세팅
+			pstmt.setInt(index++, start);
+			pstmt.setInt(index++, length);
+			
+			rs = pstmt.executeQuery();
+			JSONObject item = null;
+			while(rs.next()) {
+				index = 1;
+				item = new JSONObject();
+				int seq = rs.getInt(index++);
+				String id = rs.getString(index++);
+				String email = rs.getString(index++);
+				String name = rs.getString(index++);
+				String phone = rs.getString(index++);
+				String regdate = rs.getString(index++);
+				item.put("seq",seq);//database명 그대로 노출 좋지 않음.
+				item.put("id",id);
+				item.put("email",email);
+				item.put("name",name);
+				item.put("phone",phone);
+				item.put("regdate",regdate);
+				jsonArray.add(item);
+			}
+			jsonObj.put("items", jsonArray);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(con != null)con.close();
+				if(pstmt != null)pstmt.close();
+				if(rs != null)rs.close();
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
+		}
+		
+		return jsonObj.toString();
 	}
 }
