@@ -63,7 +63,7 @@
 										<th scope="col">등록날짜</th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody id="table_body">
 								<%
 									if(list.size() != 0){
 										for(int i=0;i<list.size();i++) {
@@ -138,19 +138,19 @@
 								<ul class="pagination pagination-lg justify-content-center">
 									<%if(currentBlock != 1){ %>
 									<li class="page-item">
-										<a class="page-link" href="list.jsp?page=<%=startPage-1 %>" tabindex="-1">&laquo;</a>
+										<a class="page-link" href="javascript:util.pageLoading('<%=startPage-1%>','<%=length%>');" tabindex="-1">&laquo;</a>
 									<%}else{%>
 									<li class="page-item disabled">
 										<a class="page-link" href="#" tabindex="-1">&laquo;</a>
 									</li>
 									<%} %>
 									<%for(int i=startPage;i<=endPage;i++){ %>
-									<li class="page-item <%if(cPage==i){ %>active<%}%>"><a class="page-link" href="list.jsp?page=<%=i%>"><%=i%></a></li>
+									<li class="page-item <%if(cPage==i){ %>active<%}%>"><a class="page-link" href="javascript:util.pageLoading('<%=i%>','<%=length%>');"><%=i%></a></li>
 									<%} %>
 									<li class="page-item">
 									<%if(currentBlock != totalBlock){ %>
 									<li class="page-item">
-										<a class="page-link" href="list.jsp?page=<%=endPage+1%>">&raquo;</a>
+										<a class="page-link" href="javascript:util.pageLoading('<%=endPage+1%>','<%=length%>');">&raquo;</a>
 									<%}else{ %>
 									<li class="page-item disabled">
 										<a class="page-link" href="#">&raquo;</a>
@@ -167,4 +167,30 @@
 			</div>
 		</div>
 		</div>
+		<script>
+			const util = {"pageLoading" : function(p,len){
+				let url = 'http://localhost/member/list.jsp?page='+p+'%length='+len;
+				history.pushState(null,null,url);
+				$.ajax({
+					type : 'GET',
+					url : 'list_ajax.jsp?page='+p+"&length="+len,
+					dataType : 'html',//json, xml, html
+					error : function(){
+						alert('HTML Loading Error');
+					},
+					success : function(html){
+						$("#table_body").children().remove();
+						$("#table_body").html(html);
+					}
+				});
+				
+			}}
+			
+			$(".pagination li").on("click",function(){
+				$(this).addClass("active");
+				$(this).siblings().removeClass("active");
+			});
+			
+			
+		</script>
 		<%@ include file="../inc/footer.jsp"%>

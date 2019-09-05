@@ -307,4 +307,89 @@ public class MemberDao {
 		
 		return jsonObj.toString();
 	}
+	
+	public boolean isCheck(String id) {
+		
+		boolean isExisted = false;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int index = 1;
+		try {
+			con = ConnLocator.getConnection();
+			StringBuffer sql = new StringBuffer();
+			sql.append("select m_id from member ");
+			sql.append("where m_id =? ");
+			
+			pstmt = con.prepareStatement(sql.toString());
+			pstmt.setString(index++, id);
+			
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				isExisted = true;
+			}
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(con != null)con.close();
+				if(pstmt != null)pstmt.close();
+				if(rs != null)rs.close();
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
+		}
+		
+		return isExisted;
+		}
+	
+	public MemberDto isMember(MemberDto m) {
+		MemberDto obj = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int index = 1;
+		
+		try {
+			con = ConnLocator.getConnection();
+			StringBuffer sql = new StringBuffer();
+			sql.append("SELECT m_seq, m_id, m_email,m_name,m_phone,date_format(m_regdate, '%Y/%m/%d') ");
+			sql.append("FROM member ");
+			sql.append("WHERE m_email = ? && m_pwd=password(?) ");
+			
+			pstmt = con.prepareStatement(sql.toString());
+			pstmt.setString(index++, m.getEmail());
+			pstmt.setString(index++, m.getPwd());
+			
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				index = 1;
+				int seq = rs.getInt(index++);
+				String id = rs.getString(index++);
+				String email = rs.getString(index++);
+				String name = rs.getString(index++);
+				String phone = rs.getString(index++);
+				String regdate = rs.getString(index++);
+				
+				obj = new MemberDto(seq,id,email,name,phone,regdate);
+			}
+			
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			// TODO: handle exception
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(con != null) con.close();
+			} catch (SQLException e2) {
+				// TODO: handle exception
+			}
+		}
+		
+		return obj;
+	}
 }

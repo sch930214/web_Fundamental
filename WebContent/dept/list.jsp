@@ -4,6 +4,11 @@
 <%@ page pageEncoding="UTF-8"%>
 <%@ include file="../inc/header.jsp" %>
 <%
+
+	String tempPage = request.getParameter("page");
+	
+
+
 	MemberDao dao = MemberDao.getInstance();
 	ArrayList<MemberDto> list = dao.select(0,100);
 %>
@@ -20,7 +25,7 @@
 				<div class="card">
 					<div class="card-body">
 						<h5 class="card-title">회원</h5>
-
+ 
 						<div class="table-responsive-md">
 							<table class="table table-hover">
 								<colgroup>
