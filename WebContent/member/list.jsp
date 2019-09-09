@@ -22,12 +22,21 @@
 	}catch(NumberFormatException e){
 		cPage = 1;
 	}
+	MemberDao dao = MemberDao.getInstance();
 	int length = 10;
 	int start = (cPage-1)*length;
+	ArrayList<MemberDto> list = dao.select(start,length);
+	
+	
+	int totalPage = 0;
+	int startPage = 0;
+	int endPage = 0;
+	int pageLength = 10;
+	int totalRows = dao.getRows();//63个
+	int pageNum = totalRows + (cPage - 1)*(-length);
 	
 
-	MemberDao dao = MemberDao.getInstance();
-	ArrayList<MemberDto> list = dao.select(start,length);
+	
 %>
 
 	<nav aria-label="breadcrumb">
@@ -76,7 +85,7 @@
 											String regdate = dto.getRegdate();
 								%>	
 									<tr>
-										<th scope="row"><%=seq %></th>
+										<th scope="row"><%=pageNum-- %></th>            <!-- 페이지 63부터 시작 -->
 										<td><%=name %></td>
 										<td><a href="view.jsp?seq=<%=seq%>&page=<%=cPage%>"><%=id %></a></td>
 										<td><%=email %></td>
@@ -111,11 +120,19 @@
 									...
 									cPage = 26 : startPage = 21, endPage = 26;
 								*/
-								int totalRows = dao.getRows();//63个
-								int totalPage = 0;
-								int startPage = 0;
-								int endPage = 0;
-								int pageLength = 10;
+								
+								
+								
+								/*
+									63 62 61 60 59 58 57 56 55 54 => page = 1
+									53 52 51 50 49 48 47 46 45 44 => page = 2
+									43 42 41 40 39 38 37 36 35 34 => page = 3
+									33 .....
+									23 .....
+									13 .....
+									3 2 1						  => page = 7
+								*/
+								
 								totalPage = totalRows%length == 0 ? totalRows/length : totalRows/length+1;
 								//삼합연산자			조건			  ?	//조건 true 		 :	//조건 false
 								if(totalPage == 0){
