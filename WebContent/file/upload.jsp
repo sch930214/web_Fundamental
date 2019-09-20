@@ -12,7 +12,7 @@
 	Calendar c = Calendar.getInstance();
 	int year = c.get(Calendar.YEAR);
 	int month = c.get(Calendar.MONTH)+1;
-	path += "\\"+year+"\\"+month;
+	path += File.separator+year+File.separator+month;
 	File f = new File(path);
 	
 	if(!f.exists()){
